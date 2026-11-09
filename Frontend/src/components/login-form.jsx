@@ -18,6 +18,23 @@ import {
 } from "@/components/ui/field"
 
 import { Input } from "@/components/ui/input"
+import { signInWithPopup } from "firebase/auth"
+import { auth, googleProvider } from "../../firebase"
+
+
+const handleGoogleLogin=async()=>{
+  try{
+const data=await signInWithPopup(auth, googleProvider)
+console.log(data,"login data")
+  }
+  catch(err){
+    console.log(err,"login error ")
+
+  }
+
+}
+
+
 
 export function LoginForm({ className, ...props }) {
   return (
@@ -40,6 +57,8 @@ export function LoginForm({ className, ...props }) {
 
               <Field>
                 <Button
+                onClick={handleGoogleLogin}
+
                   variant="outline"
                   type="button"
                   className="h-12 w-full gap-3 rounded-xl border-white/15 bg-white/[0.04]text-sm font-medium
