@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
@@ -10,31 +9,27 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { login } from '../features/auth.js'
 import {
   Field,
-  FieldDescription,
   FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field"
 
-import { Input } from "@/components/ui/input"
 import { signInWithPopup } from "firebase/auth"
 import { auth, googleProvider } from "../../firebase"
 
-
-const handleGoogleLogin=async()=>{
-  try{
-const data=await signInWithPopup(auth, googleProvider)
-console.log(data,"login data")
+const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider)
+    const token = await result.user.getIdToken()
+    console.log(result, "login data")
+    const data = await login(token)
+    console.log(data)
   }
-  catch(err){
-    console.log(err,"login error ")
-
+  catch (err) {
+    console.log(err, "login error ")
   }
-
 }
-
-
 
 export function LoginForm({ className, ...props }) {
   return (
@@ -57,12 +52,12 @@ export function LoginForm({ className, ...props }) {
 
               <Field>
                 <Button
-                onClick={handleGoogleLogin}
+                  onClick={handleGoogleLogin}
 
                   variant="outline"
                   type="button"
-                  className="h-12 w-full gap-3 rounded-xl border-white/15 bg-white/[0.04]text-sm font-medium
-                  text-white transiton hover:border-violet -400/50 hover:bg-white/[0.08]
+                  className="h-12 w-full gap-3 rounded-xl border-white/15 bg-white/[0.04] text-sm font-medium
+                  text-white transition hover:border-violet-400/50 hover:bg-white/[0.08]
                   hover:text-white"
                 >
                   <svg
@@ -79,9 +74,6 @@ export function LoginForm({ className, ...props }) {
                   Login with Google
                 </Button>
               </Field>
-
-
-          
 
             </FieldGroup>
           </form>

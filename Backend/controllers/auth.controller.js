@@ -39,17 +39,16 @@ export const login = async (req, res) => {
                 },
                 $setOnInsert: { firebaseUid: decoded.uid }
             },
-            { new: true, upsert: true, runValidators: true }
+            { returnDocument: "after", upsert: true, runValidators: true }
         )
 
-        const token = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: "7d" })
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-
 
         return res.status(200).json({
             message: "login successful",
@@ -64,13 +63,12 @@ export const login = async (req, res) => {
     }
 }
 
-
 export const logout = async (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: false,
-            sameSite: "strict"
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
         })
         return res.status(200).json({ message: "logout successful" })
     }
@@ -80,15 +78,13 @@ export const logout = async (req, res) => {
     }
 }
 
-
-export const me =async(req,res)=>{
-    try{
-        const user=req.user
+export const me = async (req, res) => {
+    try {
+        const user = req.user
         return res.status(200).json(user)
-
     }
-    catch(error){
-        return res.status(500).json({"message":"me error "})
-
+    catch (error) {
+        console.error("Error in me route:", error)
+        return res.status(500).json({ message: "me error" })
     }
 }
