@@ -17,21 +17,26 @@ import {
 
 import { signInWithPopup } from "firebase/auth"
 import { auth, googleProvider } from "../../firebase"
-
-const handleGoogleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider)
-    const token = await result.user.getIdToken()
-    console.log(result, "login data")
-    const data = await login(token)
-    console.log(data)
-  }
-  catch (err) {
-    console.log(err, "login error ")
-  }
-}
+import { useDispatch } from "react-redux"
+import { setUserData } from "@/redux/userSlice.js"
 
 export function LoginForm({ className, ...props }) {
+  const dispatch = useDispatch()
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+      const token = await result.user.getIdToken()
+      console.log(result, "login data")
+      const data = await login(token)
+      console.log(data)
+      dispatch(setUserData(data))
+    }
+    catch (err) {
+      console.log(err, "login error ")
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="border-0 bg-transparent shadow-none">
