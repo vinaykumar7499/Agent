@@ -18,10 +18,12 @@ import {
 import { signInWithPopup } from "firebase/auth"
 import { auth, googleProvider } from "../../firebase"
 import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { setUserData } from "@/redux/userSlice.js"
 
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleGoogleLogin = async () => {
     try {
@@ -31,12 +33,12 @@ export function LoginForm({ className, ...props }) {
       const data = await login(token)
       console.log(data)
       dispatch(setUserData(data))
+      navigate("/")
     }
     catch (err) {
       console.log(err, "login error ")
     }
   }
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="border-0 bg-transparent shadow-none">
