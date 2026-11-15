@@ -26,8 +26,8 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={userData ? <Navigate to="/" /> : <Login />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/login" element={userData ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/" element={userData ? <Home /> : <Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   )

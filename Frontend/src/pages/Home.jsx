@@ -8,9 +8,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bot, Plus, Settings, Settings2, UserRound, Workflow } from "lucide-react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { logout } from "@/features/auth";
+import { setUserData } from "@/redux/userSlice";
+import { Bot, LogOut, Plus, Settings, Settings2, UserRound, Workflow } from "lucide-react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 const hideScrollbar =
     "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 
@@ -33,6 +36,18 @@ const whiteBtn =
 
 
 const Home = () => {
+    const [logoutLoading, setlogoutLoading] = useState(false)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const handleLogout = async () => {
+        setlogoutLoading(true)
+        await logout()
+        dispatch(setUserData(null))
+        navigate('/login', { replace: true })
+        setlogoutLoading(false)
+
+    }
     const { userData } = useSelector(state => state.user)
     return (
         <div className="relative min-h-screen bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,#2b2f3a_0%,#191b21_55%,#121317_100%)] px-6 py-10 text-white">
@@ -162,44 +177,12 @@ const Home = () => {
                                     </div>
 
                                     <DropdownMenuSeparator className={menuSeparator} />
+                                    <DropdownMenuItem onClick={handleLogout} className='cursor-pointer gap-2.5 rounded-xl py-2.5 text-red-400 focus:bg-red-500/10 focus:text-red-400'>
+                                        <LogOut size={16} />LogOut
 
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem
-                                            render={
-                                                <Link
-                                                    className="flex items-center gap-2.5 py-2.5"
-                                                    to="/agents"
-                                                />
-                                            }
-                                        >
-                                            <Bot size={17} />
-                                            My Agents
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator className={menuSeparator} />
-                                        <DropdownMenuItem
-                                            render={
-                                                <Link
-                                                    className="flex items-center gap-2.5 py-2.5"
-                                                    to="/agents/create"
-                                                />
-                                            }
-                                        >
-                                            <Plus size={17} />
-                                            Create New
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator className={menuSeparator} />
-                                        <DropdownMenuItem
-                                            render={
-                                                <Link
-                                                    className="flex items-center gap-2.5 py-2.5"
-                                                    to="/agents/create"
-                                                />
-                                            }
-                                        >
-                                            <Settings2 size={17} />
-                                            Integration
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
+                                    </DropdownMenuItem>
+
+
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
