@@ -177,8 +177,9 @@ const Home = () => {
                                     </div>
 
                                     <DropdownMenuSeparator className={menuSeparator} />
-                                    <DropdownMenuItem onClick={handleLogout} className='cursor-pointer gap-2.5 rounded-xl py-2.5 text-red-400 focus:bg-red-500/10 focus:text-red-400'>
+                                    <DropdownMenuItem onClick={handleLogout} className='cursor-pointer gap-2.5 rounded-xl py-2.5 text-red-400 focus:bg-red-500/10 focus:text-red-400'>{logoutLoading ? "logging out..." : <>
                                         <LogOut size={16} />LogOut
+                                    </>}
 
                                     </DropdownMenuItem>
 

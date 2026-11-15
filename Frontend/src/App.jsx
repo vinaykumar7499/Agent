@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { me } from './features/auth.js'
 import { setUserData } from './redux/userSlice.js'
+import Agents from './pages/Agents.jsx'
+import Integration from './pages/Integration.jsx'
+import CreateAgent from './pages/CreateAgent.jsx'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -28,6 +31,11 @@ const App = () => {
       <Routes>
         <Route path="/login" element={userData ? <Navigate to="/" replace /> : <Login />} />
         <Route path="/" element={userData ? <Home /> : <Navigate to="/login" replace />} />
+        <Route path="/agents" element={userData ? <Agents /> : <Navigate to="/login" replace />} />
+        <Route path="/integration" element={userData ? <Integration /> : <Navigate to="/login" replace />} />
+        <Route path="/agents/create" element={userData ? <CreateAgent /> : <Navigate to="/login" replace />} />
+        <Route path="/agent/new" element={userData ? <Home /> : <Navigate to="/login" replace />} />
+
       </Routes>
     </BrowserRouter>
   )
