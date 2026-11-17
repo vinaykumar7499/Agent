@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 import connectDb from "./Config/db.js"
 import authRouter from "./routes/auth.route.js"
+import agentRouter from "./routes/agent.routes.js"
 
 dotenv.config()
 
@@ -38,6 +39,8 @@ app.use(cors({
 }))
 
 app.use("/api/auth", authRouter)
+app.use("/api/agent", agentRouter)
+
 
 const port = Number(process.env.PORT || 8000)
 if (!Number.isInteger(port) || port < 0 || port > 65535) {

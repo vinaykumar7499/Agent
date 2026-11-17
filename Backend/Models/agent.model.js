@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const agentSchema= new mongoose.Schema({
     userId:{
-        type:mongoose.Schema.Type.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         require:true,
 
