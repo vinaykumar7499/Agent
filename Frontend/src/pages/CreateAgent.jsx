@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom"
-import { ArrowLeft, Workflow, Bot } from "lucide-react"
+import { ArrowLeft, Workflow, Bot, Check } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 const availableTools = [
     {
         id: "calculator",
@@ -34,12 +35,17 @@ const CreateAgent = () => {
     const [instruction, setinstruction] = useState("")
     const [KnowledgeBase, setKnowledgeBase] = useState("")
     const [Tools, setTools] = useState([])
-    const toggelTool = (tools) => {
-        setTools((prevTools) =>
-            prevTools.includes(tools) ? prevTools.filter((t) => t !== tools) : [...prevTools, tools]
-        )
+    const [error, seterror] = useState("")
+    const toggelTool = (tool) => {
+        setTools((prevTools) => {
+            if (prevTools?.includes(tool)) {
+                return prevTools.filter((t) => t !== tool);
+            } else {
+                return [...prevTools, tool];
+            }
+        });
+    };
 
-    }
     return (
         <div className="relative min-h-screen bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,#2b2f3a_0%,#191b21_55%,#121317_100%)] px-6 py-10 text-white">
             <div
@@ -134,6 +140,7 @@ const CreateAgent = () => {
                                         return (
 
                                             <button
+                                                key={t.id}
                                                 type="button"
                                                 onClick={() => toggelTool(t.id)}
 
@@ -143,6 +150,19 @@ const CreateAgent = () => {
                                                         : "bg-white/[0.02] hover:bg-white/[0.05]"
                                                     }`}
                                             >
+                                                <div>
+                                                    <p className="text-xs font-medium text-zinc-100">
+                                                        {t.name}
+                                                    </p>
+                                                    <p className="mt-1 text-[11px] text-zinc-500">
+                                                        t.description
+                                                    </p>
+                                                </div>
+
+                                                <span
+                                                    className={`flex size-[18px] shrink-0 items-center justyfy-center rounded-md border
+                                                    ${seleected ? "border-white bg-white text-zinc-900" : "border-white/20 text-transparent"}`}
+                                                >{seleected && <Check size={12} />}</span>
                                             </button>
 
                                         )
@@ -150,6 +170,33 @@ const CreateAgent = () => {
                                 }
                             </div>
                         </section>
+
+
+                        {error && (
+                            <p
+                                role="alert"
+                                className="rounded-xl border-red-500/20 bg-red-500/20 
+                                bg-red-500/[0.08] px-4 py-3 text-xs text-red-300"
+                            >
+                            </p>
+                        )}
+
+                        <div>
+<Button className="flex item-center justify-between gap-3 border-t border-white/[0.09]pt-5">
+Cancel
+</Button>
+<Button 
+type="button"
+variant="ghost"
+className="rounded-xl text-xs text-zinc-400 hover:bg-white/10 hover:text-white"
+
+>
+    Create Agent
+</Button>
+                        </div>
+
+
+
                     </form>
                 </main>
             </div>
