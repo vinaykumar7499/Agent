@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ArrowLeft, Workflow, Bot, Check } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { createAgent } from "@/features/agent";
 const availableTools = [
     {
         id: "calculator",
@@ -36,6 +37,9 @@ const CreateAgent = () => {
     const [KnowledgeBase, setKnowledgeBase] = useState("")
     const [Tools, setTools] = useState([])
     const [error, seterror] = useState("")
+    const navigate = useNavigate()
+
+    const [loading, setloading] = useState(false)
     const toggelTool = (tool) => {
         setTools((prevTools) => {
             if (prevTools?.includes(tool)) {
@@ -46,13 +50,38 @@ const CreateAgent = () => {
         });
     };
 
+
+    const handleSumbit = async (e) => {
+        e.preventDefault()
+
+        setloading(true)
+        seterror("")
+        try {
+
+            const data = await createAgent({
+                name, knowledgebase: KnowledgeBase, instruction, tools: Tools
+            })
+            console.log(data, "create agent data pa")
+            navigate("/agents")
+        }
+        catch (error) {
+            seterror(error?.response?.data?.message || "unable to create agent")
+        }
+        finally {
+            setloading(false)
+        }
+
+    }
+
+
+
     return (
         <div className="relative min-h-screen bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,#2b2f3a_0%,#191b21_55%,#121317_100%)] px-6 py-10 text-white">
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.35)_100%)]"
             />
-            <div className="relativevz-10">
+            <div className="relative z-10">
                 {/* Header */}
                 <header className="z-30 flex h-16 shrink-0 items-center justify-between px-4 sm:px-6">
                     <Link to="/" className="flex items-center gap-2.5">
@@ -81,13 +110,14 @@ const CreateAgent = () => {
                             Configure Your Ai Agent And Define What It Can Do
                         </p>
                     </div>
-                    <form className={`space-y-7 rounded-3xl p-5 sm:p-7 ${darkPanel}`}>
+                    <form onSubmit={handleSumbit} className={`space-y-7 rounded-3xl p-5 sm:p-7 ${darkPanel}`}>
                         <section className="space-y-5">
                             <div>
                                 <label htmlFor="agent-name" className="mb-2 block text-xs font-medium text-zinc-300">
                                     Agent Name
                                 </label>
                                 <Input
+                                    id="agent-name"
                                     onChange={(e) => setname(e.target.value)}
                                     value={name}
                                     placeholder="e.g. Research Assistant "
@@ -97,10 +127,11 @@ const CreateAgent = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="intructions" className="mb-2 block text-xs font-medium text-zinc-300">
+                                <label htmlFor="instructions" className="mb-2 block text-xs font-medium text-zinc-300">
                                     intructions...
                                 </label>
                                 <Input
+                                    id="instructions"
                                     onChange={(e) => setinstruction(e.target.value)}
                                     value={instruction}
                                     placeholder="intructions"
@@ -110,10 +141,12 @@ const CreateAgent = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="KnowledgeBase " className="mb-2 block text-xs font-medium text-zinc-300">
+                                <label htmlFor="knowledge-base" className="mb-2 block text-xs font-medium text-zinc-300">
                                     KnowledgeBase
                                 </label>
-                                <Textarea placeholder="KnowledgeBase"
+                                <Textarea
+                                    id="knowledge-base"
+                                    placeholder="KnowledgeBase"
                                     onChange={(e) => setKnowledgeBase(e.target.value)}
                                     value={KnowledgeBase}
                                     maxLength={100}
@@ -127,7 +160,7 @@ const CreateAgent = () => {
                                 <h2 className="text-xs font-medium text-zinc-300">
                                     Tools
                                 </h2>
-                                <p className="mt-1 text-xstext-zinc-500">
+                                <p className="mt-1 text-xs text-zinc-500">
                                     Select  the Capablities available to your  agent
                                 </p>
                             </div>
@@ -155,7 +188,7 @@ const CreateAgent = () => {
                                                         {t.name}
                                                     </p>
                                                     <p className="mt-1 text-[11px] text-zinc-500">
-                                                        t.description
+                                                        {t.description}
                                                     </p>
                                                 </div>
 
@@ -178,21 +211,30 @@ const CreateAgent = () => {
                                 className="rounded-xl border-red-500/20 bg-red-500/20 
                                 bg-red-500/[0.08] px-4 py-3 text-xs text-red-300"
                             >
+                                {error}
                             </p>
                         )}
 
-                        <div>
-<Button className="flex item-center justify-between gap-3 border-t border-white/[0.09]pt-5">
-Cancel
-</Button>
-<Button 
-type="button"
-variant="ghost"
-className="rounded-xl text-xs text-zinc-400 hover:bg-white/10 hover:text-white"
+                        <div className="flex item-center justify-between gap-3 border-t border-white/[0.09]pt-5">
+                            <Button
+                                onClick={() => navigate("/")}
 
->
-    Create Agent
-</Button>
+                                type="button"
+                                variant="ghost"
+                                className="rounded-xl text-xs text-zinc-400 hover:bg-white/10 hover:text-white"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                disabled={loading}
+                                className="h-10 rounded-xl bg-white px-5 text-xs font-medium text-zinc-900
+                            hover:bg-zinc-200"
+
+                            >
+                                {loading ? "creating....." : " Create Agent"}
+
+                            </Button>
                         </div>
 
 
